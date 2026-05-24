@@ -1,0 +1,51 @@
+{
+  "CSE": [
+    "Dr. Rajesh Kumar",
+    "Prof. Anjali Singh",
+    "Dr. Vikas Sharma",
+    "Prof. Neha Patel",
+    "Dr. Sanjay Verma"
+  ],
+  "IT": [
+    "Dr. Priya Gupta",
+    "Prof. Arun Kumar",
+    "Dr. Ravi Singh",
+    "Prof. Divya Sharma",
+    "Dr. Akshay Patel"
+  ],
+  "ECE": [
+    "Dr. Manoj Kumar",
+    "Prof. Sneha Verma",
+    "Dr. Harsh Patel",
+    "Prof. Kavya Singh",
+    "Dr. Arjun Sharma"
+  ],
+  "ME": [
+    "Dr. Suresh Kumar",
+    "Prof. Anitha Rao",
+    "Dr. Rohan Kumar",
+    "Prof. Nisha Singh",
+    "Dr. Praveen Verma"
+  ],
+  "CE": [
+    "Dr. Ramesh Kumar",
+    "Prof. Deepika Singh",
+    "Dr. Ashok Patel",
+    "Prof. Shreya Sharma",
+    "Dr. Nikhil Kumar"
+  ],
+  "EE": [
+    "Dr. Sundar Kumar",
+    "Prof. Pooja Verma",
+    "Dr. Rahul Singh",
+    "Prof. Ritika Patel",
+    "Dr. Aryan Sharma"
+  ],
+  "BT": [
+    "Dr. Vikram Kumar",
+    "Prof. Tanvi Singh",
+    "Dr. Sachin Patel",
+    "Prof. Shruti Verma",
+    "Dr. Naman Kumar"
+  ]
+}
