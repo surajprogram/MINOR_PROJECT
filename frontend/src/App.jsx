@@ -1,46 +1,72 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Home from "./pages/Home";
 import FacultyLogin from "./pages/FacultyLogin";
+import AdminLogin from "./pages/AdminLogin";
 import Dashboard from "./pages/Dashboard";
 import Attendance from "./pages/Attendance";
+import AdminDashboard from "./pages/AdminDashboard";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
-// Protected Route Component
+const getUser = () => {
+    const stored = localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
+};
+
 const ProtectedRoute = ({ children }) => {
-    const faculty = localStorage.getItem("faculty");
-    return faculty ? children : <Navigate to="/" replace />;
+    const user = getUser();
+    return user && user.role === "faculty" ? children : <Navigate to="/" replace />;
+};
+
+const AdminRoute = ({ children }) => {
+    const user = getUser();
+    return user && user.role === "admin" ? children : <Navigate to="/" replace />;
 };
 
 function App() {
     return (
-        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen text-white">
-            <Routes>
-                {/* Login Page */}
-                <Route path="/" element={<FacultyLogin />} />
+        <div className="min-h-screen bg-slate-950 text-white">
+            <Navbar />
 
-                {/* Protected Routes */}
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/attendance"
-                    element={
-                        <ProtectedRoute>
-                            <Attendance />
-                        </ProtectedRoute>
-                    }
-                />
+            <div className="min-h-[calc(100vh-88px)]">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login-faculty" element={<FacultyLogin />} />
+                    <Route path="/login-admin" element={<AdminLogin />} />
 
-                {/* Fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/attendance"
+                        element={
+                            <ProtectedRoute>
+                                <Attendance />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin"
+                        element={
+                            <AdminRoute>
+                                <AdminDashboard />
+                            </AdminRoute>
+                        }
+                    />
 
-            {/* Global Toast Notifications */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </div>
+
+            <Footer />
+
             <ToastContainer
                 position="bottom-right"
                 autoClose={3000}

@@ -1,1 +1,268 @@
-{"sktamari9575@gmail.com": {"name": "suraj", "email": "sktamari9575@gmail.com", "password": "Suraj@2005"}}
+{
+  "sktamari9575@gmail.com": {
+    "name": "suraj",
+    "email": "sktamari9575@gmail.com",
+    "password": "Suraj@2005",
+    "role": "faculty",
+    "department": "CSE"
+  },
+  "admin@smartattend.com": {
+    "name": "Administrator",
+    "email": "admin@smartattend.com",
+    "password": "Admin@123",
+    "role": "admin",
+    "department": ""
+  },
+  "drrajeshkumar@satiengg.in": {
+    "name": "Dr. Rajesh Kumar",
+    "email": "drrajeshkumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CSE"
+  },
+  "drkanakmam@satiengg.in": {
+    "name": "Dr. Kanak Mam",
+    "email": "drkanakmam@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CSE"
+  },
+  "profdeepikamam@satiengg.in": {
+    "name": "Prof. Deepika Mam",
+    "email": "profdeepikamam@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CSE"
+  },
+  "drdivyarishisahu@satiengg.in": {
+    "name": "Dr. Divyarishi Sahu",
+    "email": "drdivyarishisahu@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CSE"
+  },
+  "drruchishrivatsav@satiengg.in": {
+    "name": "Dr. Ruchi Shrivatsav",
+    "email": "drruchishrivatsav@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CSE"
+  },
+  "profushatigga@satiengg.in": {
+    "name": "Prof. Usha Tigga",
+    "email": "profushatigga@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CSE"
+  },
+  "drpriyagupta@satiengg.in": {
+    "name": "Dr. Priya Gupta",
+    "email": "drpriyagupta@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "IT"
+  },
+  "profarunkumar@satiengg.in": {
+    "name": "Prof. Arun Kumar",
+    "email": "profarunkumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "IT"
+  },
+  "drravisingh@satiengg.in": {
+    "name": "Dr. Ravi Singh",
+    "email": "drravisingh@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "IT"
+  },
+  "profdivyasharma@satiengg.in": {
+    "name": "Prof. Divya Sharma",
+    "email": "profdivyasharma@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "IT"
+  },
+  "drakshaypatel@satiengg.in": {
+    "name": "Dr. Akshay Patel",
+    "email": "drakshaypatel@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "IT"
+  },
+  "drmanojkumar@satiengg.in": {
+    "name": "Dr. Manoj Kumar",
+    "email": "drmanojkumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ECE"
+  },
+  "profsnehaverma@satiengg.in": {
+    "name": "Prof. Sneha Verma",
+    "email": "profsnehaverma@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ECE"
+  },
+  "drharshpatel@satiengg.in": {
+    "name": "Dr. Harsh Patel",
+    "email": "drharshpatel@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ECE"
+  },
+  "profkavyasingh@satiengg.in": {
+    "name": "Prof. Kavya Singh",
+    "email": "profkavyasingh@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ECE"
+  },
+  "drarjunsharma@satiengg.in": {
+    "name": "Dr. Arjun Sharma",
+    "email": "drarjunsharma@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ECE"
+  },
+  "drsureshkumar@satiengg.in": {
+    "name": "Dr. Suresh Kumar",
+    "email": "drsureshkumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ME"
+  },
+  "profanitharao@satiengg.in": {
+    "name": "Prof. Anitha Rao",
+    "email": "profanitharao@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ME"
+  },
+  "drrohankumar@satiengg.in": {
+    "name": "Dr. Rohan Kumar",
+    "email": "drrohankumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ME"
+  },
+  "profnishasingh@satiengg.in": {
+    "name": "Prof. Nisha Singh",
+    "email": "profnishasingh@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ME"
+  },
+  "drpraveenverma@satiengg.in": {
+    "name": "Dr. Praveen Verma",
+    "email": "drpraveenverma@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "ME"
+  },
+  "drrameshkumar@satiengg.in": {
+    "name": "Dr. Ramesh Kumar",
+    "email": "drrameshkumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CE"
+  },
+  "profdeepikasingh@satiengg.in": {
+    "name": "Prof. Deepika Singh",
+    "email": "profdeepikasingh@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CE"
+  },
+  "drashokpatel@satiengg.in": {
+    "name": "Dr. Ashok Patel",
+    "email": "drashokpatel@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CE"
+  },
+  "profshreyasharma@satiengg.in": {
+    "name": "Prof. Shreya Sharma",
+    "email": "profshreyasharma@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CE"
+  },
+  "drnikhilkumar@satiengg.in": {
+    "name": "Dr. Nikhil Kumar",
+    "email": "drnikhilkumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "CE"
+  },
+  "drsundarkumar@satiengg.in": {
+    "name": "Dr. Sundar Kumar",
+    "email": "drsundarkumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "EE"
+  },
+  "profpoojaverma@satiengg.in": {
+    "name": "Prof. Pooja Verma",
+    "email": "profpoojaverma@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "EE"
+  },
+  "drrahulsingh@satiengg.in": {
+    "name": "Dr. Rahul Singh",
+    "email": "drrahulsingh@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "EE"
+  },
+  "profritikapatel@satiengg.in": {
+    "name": "Prof. Ritika Patel",
+    "email": "profritikapatel@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "EE"
+  },
+  "draryansharma@satiengg.in": {
+    "name": "Dr. Aryan Sharma",
+    "email": "draryansharma@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "EE"
+  },
+  "drvikramkumar@satiengg.in": {
+    "name": "Dr. Vikram Kumar",
+    "email": "drvikramkumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "BT"
+  },
+  "proftanvisingh@satiengg.in": {
+    "name": "Prof. Tanvi Singh",
+    "email": "proftanvisingh@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "BT"
+  },
+  "drsachinpatel@satiengg.in": {
+    "name": "Dr. Sachin Patel",
+    "email": "drsachinpatel@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "BT"
+  },
+  "profshrutiverma@satiengg.in": {
+    "name": "Prof. Shruti Verma",
+    "email": "profshrutiverma@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "BT"
+  },
+  "drnamankumar@satiengg.in": {
+    "name": "Dr. Naman Kumar",
+    "email": "drnamankumar@satiengg.in",
+    "password": "123",
+    "role": "faculty",
+    "department": "BT"
+  }
+}

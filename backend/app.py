@@ -5,6 +5,7 @@ import os
 import io
 import pandas as pd
 from datetime import datetime
+from functools import wraps
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -12,6 +13,7 @@ CORS(app)  # Enable CORS for all routes
 # Simple user storage (JSON file)
 USERS_FILE = os.path.join(os.path.dirname(__file__), "users.json")
 FACULTY_FILE = os.path.join(os.path.dirname(__file__), "faculty_list.json")
+STUDENTS_FILE = os.path.join(os.path.dirname(__file__), "data/students.json")
 ATTENDANCE_FILE = os.path.join(os.path.dirname(__file__), "data/attendance.xlsx")
 
 def load_users():
@@ -22,13 +24,83 @@ def load_users():
 
 def save_users(users):
     with open(USERS_FILE, "w") as f:
-        json.dump(users, f)
+        json.dump(users, f, indent=2)
+
 
 def load_faculty_list():
     if os.path.exists(FACULTY_FILE):
         with open(FACULTY_FILE, "r") as f:
             return json.load(f)
     return {}
+
+
+def save_faculty_list(faculty_list):
+    with open(FACULTY_FILE, "w") as f:
+        json.dump(faculty_list, f, indent=2)
+
+
+def load_students():
+    if os.path.exists(STUDENTS_FILE):
+        with open(STUDENTS_FILE, "r") as f:
+            return json.load(f)
+    return []
+
+
+def normalize_faculty_email(email):
+    return "".join(ch for ch in email.lower() if ch.isalnum())
+
+
+def find_faculty_by_email(email):
+    if not email.lower().endswith("@satiengg.in"):
+        return None
+
+    local_part = email.split("@", 1)[0].strip().lower()
+    local_part = normalize_faculty_email(local_part)
+    faculty_list = load_faculty_list()
+
+    for department, names in faculty_list.items():
+        for name in names:
+            normalized_name = name.lower()
+            candidates = [normalize_faculty_email(normalized_name)]
+
+            for prefix in ("dr.", "dr", "prof.", "prof"):
+                if normalized_name.startswith(prefix):
+                    stripped_name = normalized_name[len(prefix):]
+                    candidates.append(normalize_faculty_email(stripped_name))
+
+            if local_part in candidates:
+                return {
+                    "name": name,
+                    "department": department,
+                    "role": "faculty",
+                }
+
+    return None
+
+
+def save_students(students):
+    os.makedirs(os.path.dirname(STUDENTS_FILE), exist_ok=True)
+    with open(STUDENTS_FILE, "w") as f:
+        json.dump(students, f, indent=2)
+
+
+def get_auth_user():
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "", 1).strip()
+    if not token:
+        return None
+    users = load_users()
+    return users.get(token)
+
+
+def require_admin(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        user = get_auth_user()
+        if not user or user.get("role") != "admin":
+            return jsonify({"message": "Admin authorization required"}), 401
+        return fn(*args, **kwargs)
+    return wrapper
 
 @app.route("/", methods=["GET"])
 def home():
@@ -54,6 +126,13 @@ def register():
         if not data or not all(k in data for k in ["name", "email", "password"]):
             return jsonify({"message": "Missing required fields"}), 400
         
+        role = data.get("role", "faculty").lower()
+        if role not in ["faculty", "admin"]:
+            role = "faculty"
+
+        if role == "faculty" and not data.get("department"):
+            return jsonify({"message": "Faculty department is required"}), 400
+        
         users = load_users()
         
         if data["email"] in users:
@@ -62,7 +141,9 @@ def register():
         users[data["email"]] = {
             "name": data["name"],
             "email": data["email"],
-            "password": data["password"]
+            "password": data["password"],
+            "role": role,
+            "department": data.get("department", "")
         }
         save_users(users)
         
@@ -79,15 +160,36 @@ def login():
             return jsonify({"message": "Missing email or password"}), 400
         
         users = load_users()
-        user = users.get(data["email"])
-        
-        if not user or user["password"] != data["password"]:
+        email = data["email"].strip().lower()
+        password = data["password"]
+        user = users.get(email)
+
+        if not user:
+            if password == "123":
+                faculty = find_faculty_by_email(email)
+                if faculty:
+                    user = {
+                        "name": faculty["name"],
+                        "email": email,
+                        "password": "123",
+                        "role": faculty["role"],
+                        "department": faculty["department"],
+                    }
+                    users[email] = user
+                    save_users(users)
+
+        if not user or user["password"] != password:
             return jsonify({"message": "Invalid email or password"}), 401
         
         return jsonify({
             "message": "Login successful",
-            "token": data["email"],
-            "user": {"name": user["name"], "email": user["email"]}
+            "token": email,
+            "user": {
+                "name": user.get("name"),
+                "email": user.get("email"),
+                "role": user.get("role", "faculty"),
+                "department": user.get("department", "")
+            }
         }), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
@@ -98,6 +200,114 @@ def get_faculties():
     try:
         faculty_list = load_faculty_list()
         return jsonify(faculty_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/get-students", methods=["GET"])
+def get_students():
+    try:
+        return jsonify(load_students()), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/faculties", methods=["GET"])
+@require_admin
+def admin_get_faculties():
+    try:
+        return jsonify(load_faculty_list()), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/faculties", methods=["POST"])
+@require_admin
+def admin_add_faculty():
+    try:
+        data = request.get_json()
+        department = data.get("department", "").strip()
+        name = data.get("name", "").strip()
+
+        if not department or not name:
+            return jsonify({"message": "Department and faculty name are required"}), 400
+
+        faculty_list = load_faculty_list()
+        faculty_list.setdefault(department, [])
+        if name in faculty_list[department]:
+            return jsonify({"message": "Faculty already exists in department"}), 400
+
+        faculty_list[department].append(name)
+        save_faculty_list(faculty_list)
+        return jsonify({"message": "Faculty added successfully", "faculties": faculty_list}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/faculties", methods=["DELETE"])
+@require_admin
+def admin_remove_faculty():
+    try:
+        data = request.get_json()
+        department = data.get("department", "").strip()
+        name = data.get("name", "").strip()
+
+        if not department or not name:
+            return jsonify({"message": "Department and faculty name are required"}), 400
+
+        faculty_list = load_faculty_list()
+        if department not in faculty_list or name not in faculty_list[department]:
+            return jsonify({"message": "Faculty not found"}), 404
+
+        faculty_list[department] = [f for f in faculty_list[department] if f != name]
+        if not faculty_list[department]:
+            del faculty_list[department]
+        save_faculty_list(faculty_list)
+        return jsonify({"message": "Faculty removed successfully", "faculties": faculty_list}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/students", methods=["GET"])
+@require_admin
+def admin_get_students():
+    try:
+        return jsonify(load_students()), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/students", methods=["POST"])
+@require_admin
+def admin_add_student():
+    try:
+        data = request.get_json()
+        name = data.get("name", "").strip()
+
+        if not name:
+            return jsonify({"message": "Student name is required"}), 400
+
+        students = load_students()
+        if name in students:
+            return jsonify({"message": "Student already exists"}), 400
+
+        students.append(name)
+        save_students(students)
+        return jsonify({"message": "Student added successfully", "students": students}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/students", methods=["DELETE"])
+@require_admin
+def admin_remove_student():
+    try:
+        data = request.get_json()
+        name = data.get("name", "").strip()
+
+        if not name:
+            return jsonify({"message": "Student name is required"}), 400
+
+        students = load_students()
+        if name not in students:
+            return jsonify({"message": "Student not found"}), 404
+
+        students = [student for student in students if student != name]
+        save_students(students)
+        return jsonify({"message": "Student removed successfully", "students": students}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

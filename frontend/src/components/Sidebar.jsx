@@ -8,14 +8,21 @@ export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleLogout = () => {
-        localStorage.removeItem("faculty");
+        localStorage.removeItem("user");
         navigate("/");
     };
 
-    const menuItems = [
-        { label: "Dashboard", icon: FaHome, path: "/dashboard" },
-        { label: "Attendance", icon: FaCamera, path: "/attendance" },
-    ];
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
+    const menuItems = user?.role === "admin"
+        ? [
+            { label: "Admin Dashboard", icon: FaHome, path: "/admin" },
+        ]
+        : [
+            { label: "Dashboard", icon: FaHome, path: "/dashboard" },
+            { label: "Attendance", icon: FaCamera, path: "/attendance" },
+        ];
 
     const isActive = (path) => location.pathname === path;
 

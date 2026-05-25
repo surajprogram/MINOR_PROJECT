@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    const [faculty, setFaculty] = useState(null);
+    const [user, setUser] = useState(null);
     const [downloadLoading, setDownloadLoading] = useState(false);
     const [stats, setStats] = useState({
         totalMarked: 0,
@@ -16,11 +16,16 @@ export default function Dashboard() {
     });
 
     useEffect(() => {
-        const storedFaculty = localStorage.getItem("faculty");
-        if (!storedFaculty) {
+        const storedUser = localStorage.getItem("user");
+        if (!storedUser) {
             navigate("/");
         } else {
-            setFaculty(JSON.parse(storedFaculty));
+            const parsed = JSON.parse(storedUser);
+            if (parsed.role !== "faculty") {
+                navigate("/");
+                return;
+            }
+            setUser(parsed);
         }
     }, [navigate]);
 
@@ -33,8 +38,6 @@ export default function Dashboard() {
                     responseType: "blob",
                 }
             );
-            
-            // Create a blob URL and trigger download
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement("a");
             link.href = url;
@@ -46,7 +49,6 @@ export default function Dashboard() {
             link.click();
             link.parentNode.removeChild(link);
             window.URL.revokeObjectURL(url);
-            
             toast.success("✅ Attendance sheet downloaded successfully!");
         } catch (error) {
             console.error("Download error:", error);
@@ -56,96 +58,122 @@ export default function Dashboard() {
         }
     };
 
-    if (!faculty) return null;
+    if (!user) return null;
 
     return (
-        <div className="flex h-screen bg-gray-900">
+        <div className="flex min-h-screen bg-slate-950 text-slate-100">
             <Sidebar />
             <div className="flex-1 flex flex-col overflow-hidden">
-                <Topbar faculty={faculty} />
-                
-                {/* Main Content */}
-                <main className="flex-1 overflow-auto bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-                    <div className="p-8">
-                        {/* Welcome Section */}
-                        <div className="mb-8">
-                            <h2 className="text-3xl font-bold text-white mb-2">
-                                Welcome back, {faculty.name}! 👋
-                            </h2>
-                            <p className="text-gray-400">
-                                Department: <span className="text-blue-400 font-semibold">{faculty.department}</span>
-                            </p>
-                        </div>
+                <Topbar faculty={user} />
 
-                        {/* Stats Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            {/* Mark Attendance Card */}
-                            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 hover:bg-white/20 transition cursor-pointer" onClick={() => navigate("/attendance")}>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-gray-400 text-sm mb-2">Mark Attendance</p>
-                                        <h3 className="text-2xl font-bold text-white">Face Recognition</h3>
+                <main className="flex-1 overflow-auto px-6 py-8 md:px-8">
+                    <div className="mx-auto w-full max-w-7xl space-y-8">
+                        <section className="rounded-[2rem] bg-gradient-to-r from-indigo-700 via-blue-700 to-sky-600 p-8 shadow-2xl shadow-slate-950/40 ring-1 ring-white/10">
+                            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                                <div className="max-w-2xl">
+                                    <p className="text-sm uppercase tracking-[0.35em] text-slate-200/70">Welcome back</p>
+                                    <h1 className="mt-4 text-4xl font-bold text-white sm:text-5xl">AI Based Attendance System</h1>
+                                    <p className="mt-4 text-base leading-8 text-slate-200/85 sm:text-lg">
+                                        Fast, accurate face recognition attendance for faculty. Review reports, export records, and manage attendance seamlessly.
+                                    </p>
+                                    <div className="mt-8 flex flex-wrap gap-4">
+                                        <button
+                                            onClick={() => navigate("/attendance")}
+                                            className="inline-flex items-center gap-3 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-xl shadow-slate-900/10 transition hover:-translate-y-0.5 hover:bg-slate-100"
+                                        >
+                                            <FaCamera /> Start Attendance
+                                        </button>
+                                        <button
+                                            onClick={handleDownloadAttendance}
+                                            className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/15 disabled:cursor-not-allowed"
+                                        >
+                                            <FaDownload /> Download Report
+                                        </button>
                                     </div>
-                                    <FaCamera className="text-blue-400" size={32} />
+                                </div>
+
+                                <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 shadow-xl shadow-slate-950/20 backdrop-blur-xl">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div>
+                                            <p className="text-sm uppercase tracking-[0.35em] text-slate-300">Faculty</p>
+                                            <h2 className="mt-2 text-2xl font-semibold text-white">{user.name}</h2>
+                                        </div>
+                                        <div className="rounded-3xl bg-white/10 px-4 py-3 text-sm text-white shadow-sm shadow-slate-950/10">{user.department}</div>
+                                    </div>
+                                    <div className="mt-6 grid gap-3">
+                                        <div className="rounded-3xl bg-slate-950/70 p-4">
+                                            <p className="text-sm text-slate-400">Today</p>
+                                            <p className="mt-1 text-3xl font-bold text-white">{stats.todayMarked}</p>
+                                            <p className="mt-2 text-sm text-slate-400">Present students marked</p>
+                                        </div>
+                                        <div className="rounded-3xl bg-slate-950/70 p-4">
+                                            <p className="text-sm text-slate-400">Total</p>
+                                            <p className="mt-1 text-3xl font-bold text-white">{stats.totalMarked}</p>
+                                            <p className="mt-2 text-sm text-slate-400">Records collected</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        </section>
 
-                            {/* Today Marked Card */}
-                            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-gray-400 text-sm mb-2">Today's Attendance</p>
-                                        <h3 className="text-2xl font-bold text-white">{stats.todayMarked}</h3>
-                                    </div>
-                                    <FaCheckCircle className="text-green-400" size={32} />
-                                </div>
+                        <section className="grid gap-6 xl:grid-cols-3">
+                            <div className="rounded-[2rem] bg-slate-900/90 p-6 shadow-2xl shadow-slate-950/50 ring-1 ring-white/5 transition hover:-translate-y-1">
+                                <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Feature</p>
+                                <h3 className="mt-4 text-2xl font-semibold text-white">Face Recognition</h3>
+                                <p className="mt-3 text-sm leading-6 text-slate-300">Mark attendance automatically using the camera and AI matching.</p>
                             </div>
-
-                            {/* Total Marked Card */}
-                            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-gray-400 text-sm mb-2">Total Marked</p>
-                                        <h3 className="text-2xl font-bold text-white">{stats.totalMarked}</h3>
-                                    </div>
-                                    <FaClipboardList className="text-purple-400" size={32} />
-                                </div>
+                            <div className="rounded-[2rem] bg-slate-900/90 p-6 shadow-2xl shadow-slate-950/50 ring-1 ring-white/5 transition hover:-translate-y-1">
+                                <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Feature</p>
+                                <h3 className="mt-4 text-2xl font-semibold text-white">Real-Time Attendance</h3>
+                                <p className="mt-3 text-sm leading-6 text-slate-300">See live attendance data and avoid manual record keeping.</p>
                             </div>
-                        </div>
+                            <div className="rounded-[2rem] bg-slate-900/90 p-6 shadow-2xl shadow-slate-950/50 ring-1 ring-white/5 transition hover:-translate-y-1">
+                                <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Feature</p>
+                                <h3 className="mt-4 text-2xl font-semibold text-white">Reports</h3>
+                                <p className="mt-3 text-sm leading-6 text-slate-300">Export attendance sheets and review summaries in one click.</p>
+                            </div>
+                        </section>
 
-                        {/* Action Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                            {/* Quick Start */}
-                            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6">
-                                <h3 className="text-xl font-bold text-white mb-4">📸 Quick Start</h3>
-                                <p className="text-gray-400 mb-4">
-                                    Click below to start marking attendance using face recognition.
-                                </p>
+                        <section className="grid gap-6 lg:grid-cols-2">
+                            <div className="rounded-[2rem] bg-slate-900/90 p-6 shadow-2xl shadow-slate-950/40 ring-1 ring-white/5">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div>
+                                        <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Quick action</p>
+                                        <h3 className="mt-4 text-2xl font-semibold text-white">Start attendance session</h3>
+                                    </div>
+                                    <div className="rounded-3xl bg-blue-500/15 px-4 py-3 text-blue-200">
+                                        <FaCamera />
+                                    </div>
+                                </div>
+                                <p className="mt-4 text-sm leading-6 text-slate-300">Open the attendance module and start capturing student attendance using face recognition instantly.</p>
                                 <button
                                     onClick={() => navigate("/attendance")}
-                                    className="w-full px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition flex items-center justify-center gap-2"
+                                    className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-sky-500 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5"
                                 >
-                                    <FaCamera size={16} />
-                                    Go to Attendance
+                                    Start Now
                                 </button>
                             </div>
 
-                            {/* Download Attendance */}
-                            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6">
-                                <h3 className="text-xl font-bold text-white mb-4">📊 Download Sheet</h3>
-                                <p className="text-gray-400 mb-4">
-                                    Download attendance records as an Excel file.
-                                </p>
+                            <div className="rounded-[2rem] bg-slate-900/90 p-6 shadow-2xl shadow-slate-950/40 ring-1 ring-white/5">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div>
+                                        <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Report</p>
+                                        <h3 className="mt-4 text-2xl font-semibold text-white">Download attendance</h3>
+                                    </div>
+                                    <div className="rounded-3xl bg-sky-500/15 px-4 py-3 text-sky-200">
+                                        <FaDownload />
+                                    </div>
+                                </div>
+                                <p className="mt-4 text-sm leading-6 text-slate-300">Export attendance records to Excel and review class performance, date by date.</p>
                                 <button
                                     onClick={handleDownloadAttendance}
                                     disabled={downloadLoading}
-                                    className="w-full px-6 py-2 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg hover:from-green-600 hover:to-teal-700 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
-                                    <FaDownload size={16} />
-                                    {downloadLoading ? "Downloading..." : "Download Excel"}
+                                    {downloadLoading ? "Downloading..." : "Download Report"}
                                 </button>
                             </div>
-                        </div>
+                        </section>
                     </div>
                 </main>
             </div>
