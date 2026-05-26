@@ -5,7 +5,47 @@ import os
 # Get the directory of this script and construct the path
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(SCRIPT_DIR, "../data/attendance.xlsx")
+REPORTS_DIR = os.path.join(SCRIPT_DIR, "../data/attendance_reports")
 COLUMNS = ["Name", "Date", "Time", "Faculty", "Department"]
+
+
+def ensure_reports_dir():
+    os.makedirs(REPORTS_DIR, exist_ok=True)
+
+
+def get_faculty_report_path(faculty, department, date):
+    faculty_label = str(faculty).strip() or "UnknownFaculty"
+    department_label = str(department).strip() or "UnknownDepartment"
+    safe_faculty = "".join(c for c in faculty_label if c.isalnum() or c in ["_", "-"]).replace(" ", "_")
+    safe_department = "".join(c for c in department_label if c.isalnum() or c in ["_", "-"]).replace(" ", "_")
+    filename = f"attendance_{safe_faculty}_{safe_department}_{date}.xlsx"
+    return os.path.join(REPORTS_DIR, filename)
+
+
+def save_faculty_report(df, faculty, department, date):
+    ensure_reports_dir()
+    faculty = (faculty or "").strip()
+    department = (department or "").strip()
+    if not faculty or not department:
+        return
+
+    report_df = df[
+        (df["Faculty"].astype(str).str.strip().str.lower() == faculty.lower()) &
+        (df["Department"].astype(str).str.strip().str.lower() == department.lower()) &
+        (df["Date"] == date)
+    ]
+
+    if report_df.empty:
+        return
+
+    report_path = get_faculty_report_path(faculty, department, date)
+    with pd.ExcelWriter(report_path, engine="openpyxl") as writer:
+        report_df.to_excel(writer, index=False, startrow=4)
+        worksheet = writer.sheets["Sheet1"]
+        worksheet.cell(row=1, column=1, value="Attendance Report")
+        worksheet.cell(row=2, column=1, value=f"Faculty: {faculty}")
+        worksheet.cell(row=3, column=1, value=f"Department: {department}")
+        worksheet.cell(row=1, column=4, value=f"Date: {date}")
 
 
 def load_attendance_df():
@@ -61,5 +101,6 @@ def mark_attendance(name, faculty=None, department=None):
 
     df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
     save_attendance_df(df)
+    save_faculty_report(df, faculty, department, date)
 
     return {"status": "marked", "name": name}
