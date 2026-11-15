@@ -1,5 +1,5 @@
-🎓 AI-Based College Attendance System Using Face Recognition
-
+**🎓 AI-Based College Attendance System Using Face Recognition
+**
 📌 About the Project
 
 The AI-Based College Attendance System is a smart attendance management application that uses Artificial Intelligence and Face Recognition technology to make the attendance process easier and faster.
@@ -10,8 +10,8 @@ To solve this problem, we developed a system that uses a camera to detect and re
 
 The main purpose of this project is to reduce manual work, save time, and make college attendance management smarter.
 
-✨ Key Features
-
+**✨ Key Features
+**
 Face Detection: Detects human faces using a camera.
 
 Face Recognition: Identifies registered students using their facial features.
@@ -26,8 +26,8 @@ Attendance Records: Helps maintain attendance information.
 
 Easy-to-Use Interface: Provides a frontend interface for interacting with the application.
 
-⚙️ How Does It Work?
-
+**⚙️ How Does It Work?
+**
 The system follows a simple process:
 
 Student Registration: Student information and face images are added to the system.
@@ -42,8 +42,8 @@ Student Identification: If a matching face is found, the student is identified.
 
 Attendance Recording: The system records attendance with the relevant date and time.
 
-🛠️ Technologies Used
-
+**🛠️ Technologies Used
+**
 Frontend
 
 React.js
@@ -56,16 +56,16 @@ HTML
 
 CSS
 
-Backend
-
+**Backend
+**
 Python
 
 Flask
 
 Flask-CORS
 
-Artificial Intelligence & Computer Vision
-
+**Artificial Intelligence & Computer Vision
+**
 Face Recognition
 
 OpenCV
@@ -84,8 +84,8 @@ OpenPyXL
 
 📂 Project Structure
 
-MINOR_PROJECT/
-│
+**MINOR_PROJECT/
+**│
 ├── backend/
 │   └── Backend application files
 │
@@ -152,13 +152,15 @@ Reduce manual attendance-related work.
 
 Make attendance records easier to manage.
 
-🔮 Future Improvements
-
+**🔮 Future Improvements
+**
 Some improvements that can be introduced in the future:
 
 Live attendance dashboard.
 
 Attendance reports in Excel and PDF format.
+
+Save in Database
 
 Student attendance percentage calculation.
 
@@ -170,14 +172,14 @@ Cloud-based attendance management.
 
 Mobile application integration.
 
-🔐 Privacy and Security
-
+**🔐 Privacy and Security
+**
 Student facial information is sensitive and should be handled responsibly. The system should use facial data only with appropriate consent and authorization. Access to student information and attendance records should be restricted to authorized users.
 
-👨‍💻 Developer
-
-Developed by Suraj Gupta
-
+**👨‍💻 Developer
+**
+**Developed by Suraj Gupta
+**
 GitHub: @surajprogram
 
 ⭐ Support
